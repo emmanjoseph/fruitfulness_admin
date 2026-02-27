@@ -31,7 +31,7 @@ const Journeys =async ({searchParams}:Props) => {
       <div className="flex justify-between">
          <div className="flex items-center">
         <h1 className="text-xl font-bold">Journeys</h1>
-        <span className="ml-2 text-sm text-gray-500">({trips.meta.total} journeys)</span>
+        <span className="ml-2 text-sm">({trips.meta.total} journeys)</span>
       </div>
 
       <Button asChild>

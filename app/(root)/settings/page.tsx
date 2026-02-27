@@ -148,7 +148,7 @@ const Settings = () => {
                       {...field}
                       id="email"
                       type="email"
-                      className="rounded-2xl h-12"
+                      className="rounded-full h-12"
                       aria-invalid={fieldState.invalid}
                     />
 
@@ -183,7 +183,7 @@ const Settings = () => {
                         {...field}
                         id="current-password"
                         type={showCurrentPassword ? "text" : "password"}
-                        className="rounded-2xl h-12"
+                        className="rounded-full h-12"
                         aria-invalid={fieldState.invalid}
                       />
                       <Button 
@@ -214,7 +214,7 @@ const Settings = () => {
                           {...field}
                           id="new-password"
                           type={showNewPassword ? "text" : "password"}
-                          className="rounded-2xl h-12"
+                          className="rounded-full h-12"
                           aria-invalid={fieldState.invalid}
                         />
                         <Button 
@@ -244,7 +244,7 @@ const Settings = () => {
                           {...field}
                           id="confirm-password"
                           type={showConfirmPassword ? "text" : "password"}
-                          className="rounded-2xl h-12"
+                          className="rounded-full h-12"
                           aria-invalid={fieldState.invalid}
                         />
                         <Button 
@@ -265,7 +265,7 @@ const Settings = () => {
               </div>
             </div>
 
-            <Button type="submit" className="rounded-2xl h-12 font-semibold w-full">
+            <Button type="submit" className="rounded-full h-12 font-semibold w-full">
               Save Changes
             </Button>
           </form>
@@ -298,7 +298,7 @@ const Settings = () => {
                       aria-invalid={fieldState.invalid}
                       placeholder="admin@example.com"
                       autoComplete="off"
-                      className="rounded-2xl h-12"
+                      className="rounded-full h-12"
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -324,7 +324,7 @@ const Settings = () => {
                         aria-invalid={fieldState.invalid}
                         placeholder="••••••••"
                         autoComplete="off"
-                        className="rounded-2xl h-12"
+                        className="rounded-full h-12"
                       />
 
                       <Button type="button" variant={'ghost'} size={'icon-lg'} onClick={() => setShowPassword(!showPassword)}>
@@ -348,7 +348,7 @@ const Settings = () => {
                       Role
                     </FieldLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="rounded-2xl h-12">
+                      <SelectTrigger className="rounded-full h-12">
                         <SelectValue placeholder="Select role" />
                       </SelectTrigger>
                       <SelectContent>
@@ -366,13 +366,13 @@ const Settings = () => {
 
             <div className="space-y-2">
               <Label className="text-sm text-muted-foreground">Role Permissions:</Label>
-              <div className="p-3 bg-accent/50 rounded-2xl space-y-1 text-xs">
+              <div className="p-3 bg-accent/50 rounded-full space-y-1 text-xs">
                 <p><strong>Super Admin:</strong> Full access to all features</p>
                 <p><strong>Admin:</strong> Manage bookings, journeys, and view analytics</p>
               </div>
             </div>
 
-            <Button type="submit" className="rounded-2xl h-12 w-full">
+            <Button type="submit" className="rounded-full h-12 w-full">
               Add New Admin
             </Button>
           </form>
@@ -392,10 +392,10 @@ const Settings = () => {
           <div className="space-y-2">
             <Label htmlFor="theme">Theme</Label>
             <Select value={theme} onValueChange={setTheme}>
-              <SelectTrigger className="rounded-2xl h-12">
+              <SelectTrigger className="rounded-full h-12">
                 <SelectValue placeholder="Select theme" />
               </SelectTrigger>
-              <SelectContent className="rounded-2xl">
+              <SelectContent className="rounded-full">
                 <SelectItem value="light" className="rounded-xl">
                   <div className="flex items-center gap-2">
                     <Sun className="h-4 w-4" />
@@ -430,12 +430,12 @@ const Settings = () => {
           <CardDescription>Irreversible and destructive actions</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center flex-col lg:flex-row gap-2 justify-between p-4 border border-red-200 dark:border-red-900 rounded-2xl">
+          <div className="flex items-center flex-col lg:flex-row gap-2 justify-between p-4 border border-red-200 dark:border-red-900 rounded-full">
             <div>
               <h4 className="font-semibold text-sm">Delete Account</h4>
               <p className="text-sm text-muted-foreground">Permanently delete your admin account</p>
             </div>
-            <Button variant="destructive" className="rounded-2xl">Delete Account</Button>
+            <Button variant="destructive" className="rounded-full">Delete Account</Button>
           </div>
         </CardContent>
       </Card>

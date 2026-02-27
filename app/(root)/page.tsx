@@ -97,7 +97,7 @@ export default async function Home() {
                    <div className="flex items-center gap-x-3.5">
                     <Banknote className="text-amber-500" size={40}/>
                     <div>
-                       <CardDescription> Average guests</CardDescription>
+                       <CardDescription>Total Revenue</CardDescription>
                        <h1 className="text-4xl font-extrabold">${Math.round(analytics.totals.totalRevenue)}</h1>
                     </div>
                          
