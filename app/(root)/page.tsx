@@ -116,8 +116,8 @@ export default async function Home() {
         <div className="lg:w-4/7">
         
 <Card className="rounded-[40px] max-w-full bg-accent/45 backdrop-blur-2xl">
-  <CardContent className="space-y-2 py-2">
-    <div className="flex flex-row items-center justify-between px-3 py-1">
+  <CardContent className="space-y-2">
+    <div className="flex flex-row items-center justify-between px-3 pb-4">
       <h1 className="font-semibold">Recent bookings</h1>
       <Link href={"/bookings"}>
         <Button size={'sm'} variant={'secondary'} className="font-semibold cursor-pointer">

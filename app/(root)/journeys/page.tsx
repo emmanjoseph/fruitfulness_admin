@@ -24,7 +24,7 @@ const Journeys =async ({searchParams}:Props) => {
     country: params.country,
     search: params.q,
   });
-  // console.log("trips", trips.data);
+
   
   return (
     <section className='font-sans'>

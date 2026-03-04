@@ -395,7 +395,7 @@ const Settings = () => {
               <SelectTrigger className="rounded-full h-12">
                 <SelectValue placeholder="Select theme" />
               </SelectTrigger>
-              <SelectContent className="rounded-full">
+              <SelectContent className="rounded-2xl">
                 <SelectItem value="light" className="rounded-xl">
                   <div className="flex items-center gap-2">
                     <Sun className="h-4 w-4" />

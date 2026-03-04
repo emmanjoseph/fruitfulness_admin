@@ -65,15 +65,15 @@ export function AdminSidebar({ admin }: AdminSidebarProps) {
             <DropdownMenuTrigger>
               
                 <div className="w-full">
-            <div className="flex items-center gap-2 p-2 rounded-xl cursor-pointer bg-gray-700/5 dark:bg-gray-200/10 backdrop-blur-2xl">
+            <div className="flex items-center gap-2 p-2 rounded-xl cursor-pointer bg-linear-150 from-fuchsia-400 to-emerald-500 backdrop-blur-2xl">
               <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="text-sm font-semibold  ">
+                <span className="text-sm font-extrabold text-white">
                   {admin.email.charAt(0).toUpperCase()}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate text-gray-900/90 dark:text-gray-200">{admin.email}</p>
-                <p className="text-xs text-muted-foreground">Admin</p>
+                <p className="text-xs font-semibold truncate text-white capitalize">{admin.email}</p>
+                <p className="text-xs text-white font-semibold">Admin</p>
               </div>
             </div>
           </div>

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { EyeOff } from "lucide-react"
+import { EyeOff,Lock, Mail } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
@@ -62,25 +62,30 @@ async function onSubmit(data: z.infer<typeof formSchema>) {
   <div className='min-h-screen flex items-center justify-center font-sans'>
     <div className="relative hidden bg-[url(/hero-img.png)] lg:block w-1/2 h-screen">
      <div className="w-full h-full bg-linear-60 from-black p-10 flex flex-col justify-between">
-       <h1 className='font-bold'>Fruifulness Travel <br /> Admin Panel</h1>
-       <p className='max-w-lg'>Welcome to your tour management dashboard. Sign in to manage bookings, update itineraries, and deliver unforgettable experiences to your travelers.</p>
+       <h1 className='font-bold text-white'>Fruifulness Travel Admin Panel</h1>
+       <p className='max-w-lg text-white'>Welcome to your tour management dashboard. Sign in to manage bookings, update itineraries, and deliver unforgettable experiences to your travelers.</p>
      </div>
     </div>
     <div className="w-full md:w-1/2 ">
    
           <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-120 mx-auto p-3 space-y-4">
              <div className="py-2">
-          <h2 className="font-semibold">Welcome back</h2>
+          <h2 className="font-semibold text-center text-2xl pb-1.5">Welcome back &#128075;</h2>
+          <p className="text-center font-semibold text-sm">Please sign in to continue</p>
     </div>
             <Controller
               name="email"
               control={form.control}
               render={({ field, fieldState }) =>(
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="text-xs">
+                  <FieldLabel htmlFor="text-xs font-medium">
                     Email address
                   </FieldLabel>
-                  <Input
+
+                  <div className="flex items-center gap-x-1.5">
+
+                    <Mail className="opacity-60" size={17}/>
+                    <Input
                     {...field}
                     id="form-rhf-demo-title"
                     aria-invalid={fieldState.invalid}
@@ -88,6 +93,8 @@ async function onSubmit(data: z.infer<typeof formSchema>) {
                     autoComplete="off"
                     className="rounded-3xl h-14"
                   />
+                  </div>
+                  
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -101,11 +108,13 @@ async function onSubmit(data: z.infer<typeof formSchema>) {
               control={form.control}
               render={({ field, fieldState }) =>(
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="text-xs">
+                  <FieldLabel htmlFor="text-xs font-medium">
                     Password
                   </FieldLabel>
 
                   <div className="flex items-center gap-x-1.5">
+                    <Lock className="opacity-60"/>
+
                      <Input
                     {...field}
                     id="form-rhf-demo-title"
