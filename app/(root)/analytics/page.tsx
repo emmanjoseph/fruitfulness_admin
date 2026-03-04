@@ -14,8 +14,43 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
+// Define types for analytics data
+type BookingStatus = {
+  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED';
+  count: string;
+}
+
+type MonthlyBooking = {
+  month: string;
+  count: string;
+}
+
+type TopJourney = {
+  journey: string;
+  bookings: string;
+}
+
+type BookingByCountry = {
+  country: string;
+  count: string;
+}
+
+type AnalyticsData = {
+  totalJourneys: string;
+  totals: {
+    totalBookings: string;
+    totalRevenue: string;
+    avgGuests: string;
+  };
+  bookingsByStatus: BookingStatus[];
+  monthlyBookings: MonthlyBooking[];
+  topJourneys: TopJourney[];
+  bookingsByCountry: BookingByCountry[];
+  cancellationRate: number;
+}
+
 const Analytics = async () => {
-  const analyticsData = await getAnalytics();
+  const analyticsData: AnalyticsData = await getAnalytics();
   const [analytics] = await Promise.all([analyticsData]);
 
   return (
@@ -28,7 +63,7 @@ const Analytics = async () => {
       {/* Top KPI Cards */}
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3'>
         <Card className="rounded-[40px] max-w-full bg-accent/45 backdrop-blur-2xl">
-          <CardContent className="py-3 ">
+          <CardContent className="py-3">
             <div className="flex items-center gap-x-3.5">
               <div className="p-3 bg-blue-500/10 rounded-2xl">
                 <TrendingUp className="h-6 w-6 text-blue-500" />
@@ -58,7 +93,7 @@ const Analytics = async () => {
         </Card>
 
         <Card className="rounded-[40px] max-w-full bg-accent/45 backdrop-blur-2xl">
-          <CardContent className="py-3 ">
+          <CardContent className="py-3">
             <div className="flex items-center gap-x-3.5">
               <div className="p-3 bg-amber-500/10 rounded-2xl">
                 <DollarSign className="h-6 w-6 text-amber-500" />
@@ -74,7 +109,7 @@ const Analytics = async () => {
         </Card>
 
         <Card className="rounded-[40px] max-w-full bg-accent/45 backdrop-blur-2xl">
-          <CardContent className="py-3 ">
+          <CardContent className="py-3">
             <div className="flex items-center gap-x-3.5">
               <div className="p-3 bg-red-500/10 rounded-2xl">
                 <XCircle className="h-6 w-6 text-red-500" />
@@ -107,13 +142,13 @@ const Analytics = async () => {
               <CardDescription>Current booking distribution</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {analytics.bookingsByStatus.map((status: any) => (
+              {analytics.bookingsByStatus.map((status: BookingStatus) => (
                 <div key={status.status} className="flex items-center justify-between p-3 rounded-2xl bg-accent/50">
                   <div className="flex items-center gap-2">
                     {status.status === 'CONFIRMED' && <CheckCircle className="h-4 w-4 text-green-500" />}
                     {status.status === 'PENDING' && <Clock className="h-4 w-4 text-yellow-500" />}
                     {status.status === 'CANCELLED' && <XCircle className="h-4 w-4 text-red-500" />}
-                    <span className="font-medium text-sm capitalize">{status.status}</span>
+                    <span className="font-medium text-sm capitalize">{status.status.toLowerCase()}</span>
                   </div>
                   <Badge variant="outline" className="font-bold">
                     {status.count}
@@ -123,44 +158,47 @@ const Analytics = async () => {
             </CardContent>
           </Card>
 
-             {/* Bookings by Country List */}
-        <Card className="rounded-[40px] max-w-full bg-accent/45 backdrop-blur-2xl">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-5 w-5" />
-              Bookings by Country
-            </CardTitle>
-            <CardDescription>Distribution across destinations</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {analytics.bookingsByCountry.map((country: any) => {
-                const total = analytics.bookingsByCountry.reduce((sum: number, c: any) => sum + parseInt(c.count), 0);
-                const percentage = ((parseInt(country.count) / total) * 100).toFixed(1);
-                
-                return (
-                  <div key={country.country} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-sm capitalize">{country.country}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground">{percentage}%</span>
-                        <Badge variant="outline" className="font-bold">
-                          {country.count}
-                        </Badge>
+          {/* Bookings by Country List */}
+          <Card className="rounded-[40px] max-w-full bg-accent/45 backdrop-blur-2xl">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MapPin className="h-5 w-5" />
+                Bookings by Country
+              </CardTitle>
+              <CardDescription>Distribution across destinations</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {analytics.bookingsByCountry.map((country: BookingByCountry) => {
+                  const total = analytics.bookingsByCountry.reduce(
+                    (sum: number, c: BookingByCountry) => sum + parseInt(c.count), 
+                    0
+                  );
+                  const percentage = ((parseInt(country.count) / total) * 100).toFixed(1);
+                  
+                  return (
+                    <div key={country.country} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-sm capitalize">{country.country}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground">{percentage}%</span>
+                          <Badge variant="outline" className="font-bold">
+                            {country.count}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="w-full bg-accent rounded-full h-2">
+                        <div 
+                          className="bg-primary h-2 rounded-full transition-all"
+                          style={{ width: `${percentage}%` }}
+                        />
                       </div>
                     </div>
-                    <div className="w-full bg-accent rounded-full h-2">
-                      <div 
-                        className="bg-primary h-2 rounded-full transition-all"
-                        style={{ width: `${percentage}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Monthly Bookings */}
@@ -174,9 +212,12 @@ const Analytics = async () => {
               <CardDescription>Bookings by month</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {analytics.monthlyBookings.map((month: any) => {
+              {analytics.monthlyBookings.map((month: MonthlyBooking) => {
                 const date = new Date(month.month + '-01');
-                const monthName = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                const monthName = date.toLocaleDateString('en-US', { 
+                  month: 'long', 
+                  year: 'numeric' 
+                });
                 return (
                   <div key={month.month} className="flex items-center justify-between p-3 rounded-2xl bg-accent/50">
                     <span className="font-medium text-sm">{monthName}</span>
@@ -203,7 +244,7 @@ const Analytics = async () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {analytics.topJourneys.map((journey: any, index: number) => (
+              {analytics.topJourneys.map((journey: TopJourney, index: number) => (
                 <div key={journey.journey} className="flex items-center gap-3 p-3 rounded-2xl bg-accent/50">
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary font-bold text-sm">
                     {index + 1}
@@ -219,8 +260,6 @@ const Analytics = async () => {
             </div>
           </CardContent>
         </Card>
-
-     
       </div>
     </section>
   )
