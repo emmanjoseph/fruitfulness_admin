@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
+export const dynamic = 'force-dynamic';
+
 // Define types for analytics data
 type BookingStatus = {
   status: 'PENDING' | 'CONFIRMED' | 'CANCELLED';
