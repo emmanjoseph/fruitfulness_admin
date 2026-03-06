@@ -3,6 +3,7 @@ import { FormValues } from "@/app/(root)/journeys/add-new/page";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
+
 export const getAnalytics = async () => {
   try {
     const { cookies } = await import("next/headers");
@@ -117,7 +118,13 @@ export const getAdminProfile = async (token: string) => {
       return { message: "Failed to fetch profile", status: res.status };
     }
 
-    return res.json();
+    const data = await res.json();
+   // ✅ Store token in cookie on client side
+  if (data.token) {
+    document.cookie = `admin_token=${data.token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+  }
+
+  return data;
   } catch (err) {
     console.error("Profile fetch error:", err);
     throw err;
