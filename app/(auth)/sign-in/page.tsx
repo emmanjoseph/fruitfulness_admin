@@ -40,18 +40,16 @@ async function onSubmit(data: z.infer<typeof formSchema>) {
     const result = await signIn(data.email, data.password);
     console.log("login result", result);
     
-    // Log token if available (dev mode only)
-    if (result?.token) {
-      console.log("Token created:", result.token);
-    }
-
     toast.dismiss();
     toast.success("Signed in successfully");
 
+    // Redirect after successful sign in
     router.push("/");
+    router.refresh(); // Refresh to update the UI
   } catch (err) {
     toast.dismiss();
-    toast.error("Invalid email or password");
+    const errorMessage = err instanceof Error ? err.message : "Invalid email or password";
+    toast.error(errorMessage);
     console.error("Sign in error:", err);
   }
 }

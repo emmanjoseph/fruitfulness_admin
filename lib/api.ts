@@ -1,14 +1,14 @@
 
 import { FormValues } from "@/app/(root)/journeys/add-new/page";
+import { useAuthStore } from "@/store/authStore";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
-
 
 export const getAnalytics = async () => {
   try {
     const { cookies } = await import("next/headers");
     const cookieStore = cookies();
-    const token = (await cookieStore).get("admin_token")?.value;
+    const token = (await cookieStore).get("admin-token")?.value;
 
     if (!token) throw new Error("No admin token");
 
@@ -93,13 +93,23 @@ export const signIn = async (email: string, password: string) => {
       },
       body: JSON.stringify({ email, password }),
     });
+
+    const data = await response.json();
+
     if (!response.ok) {
       return {
         message: "Failed to sign in",
         status: response.status,
       };
     }
-    const data = await response.json();
+
+     if (data.token) {
+      useAuthStore.getState().setToken(data.token);
+
+       // 👇 Also store in cookie for server components
+    document.cookie = `admin-token=${data.token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Strict`;
+    }
+
     return data;
   } catch (error) {
     console.error("Auth failed:", error);
@@ -121,7 +131,7 @@ export const getAdminProfile = async (token: string) => {
     const data = await res.json();
    // ✅ Store token in cookie on client side
   if (data.token) {
-    document.cookie = `admin_token=${data.token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+    document.cookie = `admin-token=${data.token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
   }
 
   return data;
@@ -140,7 +150,7 @@ export const addNewAdmin = async (data: AdminValues) => {
   const { cookies } = await import("next/headers");
   const cookieStore = cookies();
 
-  const token = (await cookieStore).get("admin_token")?.value;
+  const token = (await cookieStore).get("admin-token")?.value;
 
   if (!token) throw new Error("No admin token");
 
@@ -166,7 +176,7 @@ export const getAllBookings = async (page: number = 1, limit: number =10) => {
   try {
     const { cookies } = await import("next/headers");
     const cookieStore = cookies();
-    const token = (await cookieStore).get("admin_token")?.value;
+    const token = (await cookieStore).get("admin-token")?.value;
 
     if (!token) throw new Error("No admin token");
 
@@ -257,7 +267,7 @@ export const getCurrentAdmin = async () => {
   const { cookies } = await import("next/headers");
 
   const cookieStore = await cookies();
-  const token = cookieStore.get("admin_token")?.value;
+  const token = cookieStore.get("admin-token")?.value;
 
   if (!token) throw new Error("No admin token");
 
@@ -276,10 +286,10 @@ export const getCurrentAdmin = async () => {
 };
 
 export const logout = () => {
-  // Delete the admin_token cookie
-  document.cookie = "admin_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  // Clear token from Zustand
+  useAuthStore.getState().clearToken();
   
-  // Redirect to login page
+  // Redirect
   window.location.href = "/sign-in";
 };
 

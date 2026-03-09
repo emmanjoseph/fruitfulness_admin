@@ -4,7 +4,7 @@ import { AdminSidebar } from "./Sidebar";
 
 export async function AdminSidebarWrapper() {
   const admin = await getCurrentAdmin();
-//   console.log(admin);
+  console.log(admin);
   
   
   return <AdminSidebar admin={admin} />;
