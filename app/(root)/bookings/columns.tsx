@@ -127,23 +127,34 @@ function BookingActions({ booking }: { booking: Booking['booking'] }) {
     }
   };
 
-  const handleDeleteBooking = async () => {
-    try {
-      setIsLoading(true);
-      toast.loading("Deleting booking...");
-      await deleteBookingAction(booking.id);
-      toast.dismiss();
-      toast.success("Booking deleted successfully");
-      setShowDeleteDialog(false);
-      router.refresh();
-    } catch (error) {
-      toast.dismiss();
-      toast.error("Failed to delete booking");
-      console.error(error);
-    } finally {
+const handleDeleteBooking = async () => {
+  try {
+    setIsLoading(true);
+    toast.loading("Deleting booking...");
+    
+    const result = await deleteBookingAction(booking.id);
+    
+    toast.dismiss();
+    
+    // ✅ Check if deletion was successful
+    if (!result.success) {
+      toast.error(result.error || "Failed to delete booking");
       setIsLoading(false);
+      return;
     }
+    
+    toast.success("Booking deleted successfully");
+    setShowDeleteDialog(false);
+    router.refresh();
+    
+  } catch (error) {
+    toast.dismiss();
+    toast.error("Failed to delete booking");
+    console.error(error);
+  } finally {
+    setIsLoading(false);
   }
+}
 
   return (
     <>
@@ -426,7 +437,7 @@ export const columns: ColumnDef<Booking>[] = [
       return (
         <div className="text-center">
           <Badge variant="outline" className="font-medium">
-            {days}d
+            {days === 1 ? "1 day": `${days} days`}
           </Badge>
         </div>
       )

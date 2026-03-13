@@ -1,27 +1,31 @@
-import { AdminSidebarWrapper } from "@/components/admin-sidebar-wrapper";
-import AuthGuard from "@/components/auth-guard";
-import { useAuthStore } from "@/store/authStore";
+// components/auth-guard.tsx
+"use client"
 
-export default async function Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-   const token = useAuthStore.getState().token;
-   console.log("Admin token", token);
-   
+import { AdminSidebarWrapper } from '@/components/admin-sidebar-wrapper'
+import { useAuthStore } from '@/store/authStore'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
-  return (
-   
-      <div className="flex gap-2 font-sans">
-      <AdminSidebarWrapper/>
-      <div className="w-full p-5">
-         <AuthGuard>
-          {children}
-         </AuthGuard>
-        </div>
-    </div>
-   
-    
-  );
+export default function AuthGuard({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/sign-in')
+    }
+  }, [isAuthenticated, router])
+
+  if (!isAuthenticated) {
+    return null // or loading spinner
+  }
+
+  return <>
+  <div className='flex'>
+  <AdminSidebarWrapper/>
+  <div className="w-full p-5">{children}</div>
+
+
+  </div>
+  </>
 }

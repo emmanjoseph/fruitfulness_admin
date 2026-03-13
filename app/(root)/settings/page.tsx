@@ -116,7 +116,7 @@ const Settings = () => {
   }
 
   return (
-    <div className='max-w-xl space-y-6 pb-10'>
+    <div className='mx-auto max-w-xl space-y-6 pb-10'>
       <div>
         <h1 className='font-bold text-2xl'>Settings</h1>
         <p className='text-muted-foreground text-sm'>Manage your account and preferences</p>

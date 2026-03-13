@@ -4,11 +4,13 @@ import { cookies } from "next/headers";
 import { AdminValues } from "./api";
 import { revalidatePath } from "next/cache";
 
-const API_URL = "http://localhost:8000";
+// const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+const API_URL =  "http://localhost:8000";
 
 export async function addNewAdminAction(data: AdminValues
 ) {
-  const token = (await cookies()).get("admin_token")?.value;
+  const token = (await cookies()).get("admin-token")?.value;
 
   if (!token) throw new Error("No admin token");
 
@@ -32,7 +34,7 @@ export async function addNewAdminAction(data: AdminValues
 export async function deleteJourneyAction(id: string) {
   try {
     const cookieStore = await cookies()
-    const token = cookieStore.get("admin_token")?.value
+    const token = cookieStore.get("admin-token")?.value
 
     if (!token) {
       return { success: false, error: "No admin token" }
@@ -63,7 +65,7 @@ export async function deleteJourneyAction(id: string) {
 export const deleteBookingAction = async (id: string) => {
   try {
      const cookieStore = await cookies()
-     const token = cookieStore.get("admin_token")?.value
+     const token = cookieStore.get("admin-token")?.value
 
     if (!token) {
       return { success: false, error: "No admin token" }
@@ -96,7 +98,7 @@ export const deleteBookingAction = async (id: string) => {
 
 export const updateAdminEmail = async (data: { email: string }) => {
    const cookieStore = await cookies()
-     const token = cookieStore.get("admin_token")?.value
+     const token = cookieStore.get("admin-token")?.value
 
     if (!token) {
       return { success: false, error: "No admin token" }
@@ -126,7 +128,7 @@ export const changeAdminPassword = async (data: {
 }) => {
 
    const cookieStore = await cookies()
-     const token = cookieStore.get("admin_token")?.value
+     const token = cookieStore.get("admin-token")?.value
 
     if (!token) {
       return { success: false, error: "No admin token" }

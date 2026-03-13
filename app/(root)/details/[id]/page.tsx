@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Trash2Icon } from "lucide-react"
 import { deleteJourneyAction } from '@/lib/actions'
+import { toast } from 'sonner'
 
 const DetailsPage = () => { 
   const { id } = useParams()
@@ -34,18 +35,31 @@ const DetailsPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter()
 
-  const handleDelete = async () => {
-    if (!idParam) return
-    setIsDeleting(true);
-    try {
-      await deleteJourneyAction(idParam)
-      router.push('/journeys')
-    } catch (err) {
-      console.error('Delete failed', err)
-    }finally{
-      setIsDeleting(false);
+const handleDelete = async () => {
+  if (!idParam) return;
+  
+  setIsDeleting(true);
+  
+  try {
+    const result = await deleteJourneyAction(idParam);
+    
+    // ✅ Check if deletion was successful
+    if (!result.success) {
+      toast.error(result.error || "Failed to delete journey");
+      return;
     }
+    
+    toast.success("Journey deleted successfully");
+    router.push('/journeys');
+    router.refresh(); // ✅ Force refresh to update the list
+    
+  } catch (err) {
+    console.error('Delete failed:', err);
+    toast.error("An error occurred while deleting");
+  } finally {
+    setIsDeleting(false);
   }
+}
 
 
   useEffect(() => {

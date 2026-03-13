@@ -87,7 +87,7 @@ export const signIn = async (email: string, password: string) => {
   try {
     const response = await fetch(`${API_URL}/api/admin/login`, {
       method: "POST",
-      credentials: "include", // ✅ IMPORTANT
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -97,48 +97,56 @@ export const signIn = async (email: string, password: string) => {
     const data = await response.json();
 
     if (!response.ok) {
-      return {
-        message: "Failed to sign in",
-        status: response.status,
-      };
+      throw new Error(data.message || "Failed to sign in");
     }
 
-     if (data.token) {
+    if (data.token) {
       useAuthStore.getState().setToken(data.token);
 
-       // 👇 Also store in cookie for server components
-    document.cookie = `admin-token=${data.token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Strict`;
+      // ✅ Conditional Secure flag
+      const isProduction = typeof window !== 'undefined' && window.location.hostname !== 'localhost';
+      const secure = isProduction ? '; Secure' : '';
+      document.cookie = `admin-token=${data.token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Strict${secure}`;
+
+      // Fetch admin profile
+      try {
+        const adminProfile = await getAdminProfileClient(data.token);
+        useAuthStore.getState().setAdmin(adminProfile);
+      } catch (error) {
+        console.error('Failed to fetch admin profile:', error);
+      }
     }
 
     return data;
   } catch (error) {
     console.error("Auth failed:", error);
+    throw error;
   }
 };
 
-export const getAdminProfile = async (token: string) => {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+const getAdminProfileClient = async (token: string) => {
+  const res = await fetch(`${API_URL}/api/admin/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 
-    if (!res.ok) {
-      return { message: "Failed to fetch profile", status: res.status };
-    }
-
-    const data = await res.json();
-   // ✅ Store token in cookie on client side
-  if (data.token) {
-    document.cookie = `admin-token=${data.token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+  if (!res.ok) {
+    throw new Error("Failed to fetch profile");
   }
 
-  return data;
-  } catch (err) {
-    console.error("Profile fetch error:", err);
-    throw err;
-  }
+  return res.json();
+};
+
+export const logout = () => {
+  useAuthStore.getState().clearToken();
+  
+  const isProduction = typeof window !== 'undefined' && window.location.hostname !== 'localhost';
+  const secure = isProduction ? '; Secure' : '';
+  document.cookie = `admin-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Strict${secure}`;
+  
+  window.location.href = "/sign-in";
 };
 
 export type AdminValues= {
@@ -263,33 +271,7 @@ export const completeBooking = (id: string) =>
   bookingAction(`/api/booking/${id}/complete`);
 
 
-export const getCurrentAdmin = async () => {
-  const { cookies } = await import("next/headers");
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get("admin-token")?.value;
 
-  if (!token) throw new Error("No admin token");
 
-  const res = await fetch(`${API_URL}/api/admin/me`, {
-    headers: {
-       Authorization: `Bearer ${token}`,
-    },
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error(`Failed to fetch admin: ${res.status}`);
-  }
-
-  return res.json();
-};
-
-export const logout = () => {
-  // Clear token from Zustand
-  useAuthStore.getState().clearToken();
-  
-  // Redirect
-  window.location.href = "/sign-in";
-};
 
