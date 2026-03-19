@@ -24,8 +24,6 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   <div className='flex'>
   <AdminSidebarWrapper/>
   <div className="w-full p-5">{children}</div>
-
-
   </div>
   </>
 }

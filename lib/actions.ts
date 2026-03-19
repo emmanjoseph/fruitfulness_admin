@@ -4,9 +4,7 @@ import { cookies } from "next/headers";
 import { AdminValues } from "./api";
 import { revalidatePath } from "next/cache";
 
-// const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-const API_URL =  "http://localhost:8000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export async function addNewAdminAction(data: AdminValues
 ) {
@@ -151,6 +149,43 @@ export const changeAdminPassword = async (data: {
   }
 
   return res.json();
+};
+
+
+export type PricingTier = "BUDGET" | "MIDRANGE" | "LUXURY";
+
+export interface UpdateInclusionsExclusionsPayload {
+  inclusions?: string[];
+  exclusions?: string[];
+}
+
+export const updatePricingInclusionsExclusions = async (
+  journeyId: string,
+  tier: PricingTier,
+  data: UpdateInclusionsExclusionsPayload
+) => {
+  try {
+    const res = await fetch(
+      `${API_URL}/api/journeys/${journeyId}/pricing/${tier.toLowerCase()}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.message || "Failed to update inclusions/exclusions");
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Update inclusions/exclusions failed:", error);
+    throw error;
+  }
 };
 
 

@@ -37,6 +37,8 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import ItinerariesBuilder from "@/components/ItinerariesBuilder";
 import PricingBuilder from "@/components/PricingBuilder";
 import { IconX } from "@tabler/icons-react";
+import { TAG_OPTIONS } from "../../add-new/page";
+import { PricingInclusionsEditor } from "@/components/pricingInclusionsEditor";
 
 export type FormValues = z.infer<typeof addNewSchema>;
 
@@ -46,18 +48,7 @@ const countries = [
   { title: "Uganda", value: "uganda" },
 ];
 
-const TAG_OPTIONS = [
-  "safari",
-  "beach",
-  "hiking",
-  "cultural",
-  "wildlife",
-  "adventure",
-  "honeymoon",
-  "mountain",
-  "luxury",
-  "budget",
-];
+
 
 export default function UpdateJourney() {
   const { id } = useParams();
@@ -66,6 +57,9 @@ export default function UpdateJourney() {
   const journeyId = Array.isArray(id) ? id[0] : id;
 
   const [loading, setLoading] = useState(false);
+
+    const [btv, setBtv] = useState("");
+
 
   const form = useForm<FormValues>({
     resolver: zodResolver(addNewSchema),
@@ -79,7 +73,7 @@ export default function UpdateJourney() {
       rating: undefined,
       numberOfDays: 1,
       activities: [],
-      bestTimeToVisit: "",
+      bestTimeToVisit: [],
       country: "",
       itineraries: [],
       tags: [],
@@ -448,30 +442,60 @@ export default function UpdateJourney() {
           }}
         />
          {/* Best time to visit */}
-                <Controller
-                  control={form.control}
-                  name="bestTimeToVisit"
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel className="dark-4">Best time to visit</FieldLabel>
-                      <div className="flex items-center gap-3 px-3.5 py-2 bg-gray-200/30 dark:bg-gray-100/10 rounded-3xl">
-                        <Clock size={16} className="dark-4" />
-                        <Input
-                          {...field}
-                          className="focus-visible:ring-0 border-0 shadow-none"
-                          placeholder="eg. from August to december"
-                        />
-                      </div>
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
+               {/* Best time to visit */}
+<Controller
+  control={form.control}
+  name="bestTimeToVisit"
+  render={({ field, fieldState }) => {
+
+    return (
+      <Field data-invalid={fieldState.invalid}>
+        <FieldLabel>Best time to visit</FieldLabel>
+        <div className="flex flex-wrap gap-2 p-3 rounded-3xl bg-gray-200/30 dark:bg-gray-100/10">
+          {(field.value ?? []).map((item: string, i: number) => (
+            <span
+              key={i}
+              className="flex items-center gap-2 px-3 py-1 text-sm bg-black text-white rounded-full"
+            >
+              {item}
+              <button
+                type="button"
+                onClick={() =>
+  field.onChange((field.value ?? []).filter((_: string, idx: number) => idx !== i))
+}
+                className="text-white/70 hover:text-white"
+              >
+                <IconX size={15} />
+              </button>
+            </span>
+          ))}
+          <Input
+            value={btv}
+            onChange={(e) => setBtv(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                const trimmed = btv.trim();
+                if (!trimmed) return;
+                field.onChange([...(field.value ?? []), trimmed]);
+                setBtv("");
+              }
+            }}
+            placeholder='e.g. "June to October" then press Enter'
+            className="flex-1 border-0 shadow-none focus-visible:ring-0 bg-transparent text-sm"
+          />
+        </div>
+        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+      </Field>
+    );
+  }}
+/>
 
         {/* ITINERARIES */}
         <ItinerariesBuilder form={form} />
         <PricingBuilder form={form}/>
+
+        {journeyId && <PricingInclusionsEditor journeyId={journeyId} />}
 
         <Button type="submit" disabled={loading} className="w-full rounded-full h-12 bg-emerald-500 text-white hover:bg-emerald-600 cursor-pointer">
           {loading ? "Saving..." : "Save changes"}

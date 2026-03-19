@@ -14,7 +14,9 @@ export const pricingSchema = z.object({
   currency: z.enum(["USD","KES"]),
   accommodation: z.string().optional(),
   transportType: z.string().optional(),
-  transportDescription: z.string().optional()
+  transportDescription: z.string().optional(),
+  inclusions: z.array(z.string().min(1)).optional(),  // 👈
+  exclusions: z.array(z.string().min(1)).optional(),
 });
 
 
@@ -61,9 +63,7 @@ export const addNewSchema = z.object({
     .array(z.string().min(2))
     .min(1, "At least one activity is required"),
 
-  bestTimeToVisit: z
-    .string()
-    .optional(),
+  bestTimeToVisit: z.array(z.string()).optional(),  // 👈 was z.string()
 
   country: z
     .string()

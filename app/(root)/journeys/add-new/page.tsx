@@ -22,6 +22,7 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import ItinerariesBuilder from "@/components/ItinerariesBuilder";
 import PricingBuilder from "@/components/PricingBuilder";
 import { uploadJourney } from "@/lib/api";
+import { IconX } from "@tabler/icons-react";
 // import { uploadJourney } from "@/lib/api";
 
 const countries = [
@@ -30,17 +31,59 @@ const countries = [
   { title: "Uganda", value: "uganda" },
 ];
 
-const TAG_OPTIONS = [
+export const TAG_OPTIONS = [
+  // Wildlife & Nature
   "safari",
-  "beach",
-  "hiking",
-  "cultural",
   "wildlife",
-  "adventure",
-  "honeymoon",
+  "bird-watching",
+  "marine-life",
+  "nature",
+  "forest",
+  "desert",
+
+  // Landscape & Terrain
   "mountain",
+  "beach",
+  "lake",
+  "island",
+  "savannah",
+  "waterfall",
+
+  // Activity
+  "hiking",
+  "adventure",
+  "diving",
+  "snorkeling",
+  "cycling",
+  "fishing",
+  "hot-air-balloon",
+  "photography",
+  "camping",
+  "walking-tour",
+
+  // Experience
+  "cultural",
+  "historical",
+  "honeymoon",
+  "family-friendly",
+  "solo-travel",
+  "group-tour",
+  "private-tour",
+  "off-the-beaten-path",
+  "community-visit",
+
+  // Budget
   "luxury",
   "budget",
+  "midrange",
+
+  // Region-specific (Kenya/East Africa context)
+  "great-migration",
+  "big-five",
+  "maasai",
+  "swahili-coast",
+  "rift-valley",
+  "northern-frontier",
 ];
 
 export type FormValues = z.infer<typeof addNewSchema>;
@@ -62,7 +105,7 @@ const AddNew = () => {
       rating: 1,
       numberOfDays: 1,
       activities: [],
-      bestTimeToVisit: "",
+      bestTimeToVisit:[],
       country: "",
       itineraries: [],
       tags: [],
@@ -324,93 +367,127 @@ const AddNew = () => {
           )}
         />
 
-        {/* Activities */}
-        <Controller
-          control={form.control}
-          name="activities"
-          render={({ field, fieldState }) => {
-            const addActivity = () => {
-              const value = input.trim();
-              if (!value) return;
+       <Controller
+  control={form.control}
+  name="activities"
+  render={({ field, fieldState }) => {
+    const addActivity = () => {
+      const value = input.trim();
+      if (!value) return;
 
-              if (field.value.includes(value)) {
-                setInput("");
-                return;
+      if (field.value.includes(value)) {
+        setInput("");
+        return;
+      }
+
+      field.onChange([...field.value, value]);
+      setInput("");
+    };
+
+    const removeActivity = (index: number) => {
+      field.onChange(
+        field.value.filter((_: string, i: number) => i !== index)
+      );
+    };
+
+    return (
+      <Field data-invalid={fieldState.invalid}>
+        <FieldLabel className="dark-4">Activities and hightlights</FieldLabel>
+
+        {/* Input Section */}
+        <div className="flex gap-2">
+          <Input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Add activity..."
+            className="rounded-2xl"
+          />
+          <Button
+            type="button"
+            onClick={addActivity}
+            className="rounded-2xl"
+          >
+            Add
+          </Button>
+        </div>
+
+        {/* Activities List */}
+        <div className="mt-4 space-y-2">
+          {field.value.map((activity: string, index: number) => (
+            <div
+              key={index}
+              className="flex items-center justify-between px-4 py-2 rounded-2xl bg-gray-100 dark:bg-gray-800"
+            >
+              <span className="text-sm">{activity}</span>
+
+              <button
+                type="button"
+                onClick={() => removeActivity(index)}
+                className="text-red-500 hover:text-red-600 text-sm"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {fieldState.invalid && (
+          <FieldError errors={[fieldState.error]} />
+        )}
+      </Field>
+    );
+  }}
+/>
+      {/* Best time to visit */}
+<Controller
+  control={form.control}
+  name="bestTimeToVisit"
+  render={({ field, fieldState }) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [btv, setBtv] = useState("");
+
+    return (
+      <Field data-invalid={fieldState.invalid}>
+        <FieldLabel>Best time to visit</FieldLabel>
+        <div className="flex flex-wrap gap-2 p-3 rounded-3xl bg-gray-200/30 dark:bg-gray-100/10">
+          {(field.value ?? []).map((item: string, i: number) => (
+            <span
+              key={i}
+              className="flex items-center gap-2 px-3 py-1 text-sm bg-black text-white rounded-full"
+            >
+              {item}
+              <button
+                type="button"
+                onClick={() =>
+  field.onChange((field.value ?? []).filter((_: string, idx: number) => idx !== i))
+}
+                className="text-white/70 hover:text-white"
+              >
+                <IconX size={15} />
+              </button>
+            </span>
+          ))}
+          <Input
+            value={btv}
+            onChange={(e) => setBtv(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                const trimmed = btv.trim();
+                if (!trimmed) return;
+                field.onChange([...(field.value ?? []), trimmed]);
+                setBtv("");
               }
-
-              field.onChange([...field.value, value]);
-              setInput("");
-            };
-
-            const removeActivity = (index: number) => {
-              field.onChange(
-                field.value.filter((_: string, i: number) => i !== index)
-              );
-            };
-
-            return (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel className="dark-4">Activities</FieldLabel>
-                <div className="flex flex-wrap gap-2 p-3 rounded-3xl bg-gray-200/30">
-                  {field.value.map((activity: string, index: number) => (
-                    <span
-                      key={activity}
-                      className="flex items-center gap-2 px-3 py-1 text-sm bg-black text-white rounded-full"
-                    >
-                      {activity}
-                      <button
-                        type="button"
-                        onClick={() => removeActivity(index)}
-                        className="text-white/70 hover:text-white focus:outline-none"
-                        aria-label={`Remove ${activity}`}
-                      >
-                        ×
-                      </button>
-                    </span>
-                  ))}
-
-                  <Input
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addActivity();
-                      }
-                    }}
-                    placeholder="Type activity and press Enter"
-                    className="flex-1 border-0 shadow-none focus-visible:ring-0 bg-transparent"
-                  />
-                </div>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            );
-          }}
-        />
-
-        {/* Best time to visit */}
-        <Controller
-          control={form.control}
-          name="bestTimeToVisit"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel className="dark-4">Best time to visit</FieldLabel>
-              <div className="flex items-center gap-3 px-3.5 py-2 bg-gray-200/30 dark:bg-gray-100/10 rounded-3xl">
-                <Clock size={16} className="dark-4" />
-                <Input
-                  {...field}
-                  className="focus-visible:ring-0 border-0 shadow-none"
-                  placeholder="eg. from August to december"
-                />
-              </div>
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} />
-              )}
-            </Field>
-          )}
-        />
+            }}
+            placeholder='e.g. "June to October" then press Enter'
+            className="flex-1 border-0 shadow-none focus-visible:ring-0 bg-transparent text-sm"
+          />
+        </div>
+        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+      </Field>
+    );
+  }}
+/>
 
         {/* Dynamic itineraries */}
         <ItinerariesBuilder form={form} />

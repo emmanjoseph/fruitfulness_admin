@@ -271,7 +271,3 @@ export const completeBooking = (id: string) =>
   bookingAction(`/api/booking/${id}/complete`);
 
 
-
-
-
-
