@@ -52,7 +52,7 @@ export default async function Home() {
 
            {/* kpi cards */}
       <div className="mt-5 grid grid-cols-1 lg:grid-cols-4 gap-3">
-        <Card className="rounded-4xl bg-violet-200/15 dark:bg-orange-200/15 backdrop-blur-lg shadow">
+        <Card className="rounded-[40px] max-w-full bg-accent/45 backdrop-blur-2xl">
               <CardContent>
                    <div className="flex items-center gap-x-3.5">
                     <PalmtreeIcon size={40} className="text-green-400"/>
@@ -66,7 +66,7 @@ export default async function Home() {
           </CardContent>
           
         </Card>
-        <Card className="rounded-4xl bg-indigo-200/15 dark:bg-teal-200/15 backdrop-blur-lg shadow">
+        <Card className="rounded-[40px] max-w-full bg-accent/45 backdrop-blur-2xl">
            <CardContent>
                    <div className="flex items-center gap-x-3.5">
                     <BookMarked className="text-red-500" size={40}/>
@@ -79,7 +79,7 @@ export default async function Home() {
 
           </CardContent>
         </Card>
-        <Card className="rounded-4xl bg-rose-200/15 dark:bg-cyan-200/15 backdrop-blur-lg shadow">
+        <Card className="rounded-[40px] max-w-full bg-accent/45 backdrop-blur-2xl">
           <CardContent>
                    <div className="flex items-center gap-x-3.5">
                     <Users2 className="text-indigo-500" size={40}/>
@@ -92,7 +92,7 @@ export default async function Home() {
 
           </CardContent>
         </Card>
-        <Card className="rounded-4xl bg-amber-200/15 dark:bg-fuchsia-200/15 backdrop-blur-lg shadow">
+        <Card className="rounded-[40px] max-w-full bg-accent/45 backdrop-blur-2xl">
            <CardContent>
                    <div className="flex items-center gap-x-3.5">
                     <Banknote className="text-amber-500" size={40}/>

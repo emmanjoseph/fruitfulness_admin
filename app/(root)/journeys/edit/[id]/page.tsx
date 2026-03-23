@@ -493,7 +493,7 @@ export default function UpdateJourney() {
 
         {/* ITINERARIES */}
         <ItinerariesBuilder form={form} />
-        <PricingBuilder form={form}/>
+        <PricingBuilder form={form} showInclusionsExclusions={false} />
 
         {journeyId && <PricingInclusionsEditor journeyId={journeyId} />}
 

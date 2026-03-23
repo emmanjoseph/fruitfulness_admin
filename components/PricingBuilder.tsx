@@ -88,29 +88,31 @@ function TagListInput({
   );
 }
 
-export default function PricingBuilder({ form }: any) {
+export default function PricingBuilder({ form, showInclusionsExclusions = true }: any) {
   
   return (
     <Controller
       control={form.control}
       name="pricing"
       render={({ field }) => {
-        const addTier = (tier: string) => {
-          if (field.value.find((p: any) => p.tier === tier)) return;
-
-          field.onChange([
-            ...field.value,
-            {
-              tier,
-              citizenPrice: 0,
-              nonResidentPrice: 0,
-              currency: "KES",
-              accommodation: "",
-              transportType: "",
-              transportDescription: "",
-            },
-          ]);
-        };
+       const addTier = (tier: string) => {
+  if (field.value.find((p: any) => p.tier === tier)) return;
+  field.onChange([
+    ...field.value,
+    {
+      tier,
+      citizenPrice: 0,
+      nonResidentPrice: 0,
+      currency: "KES",
+      accommodation: "",
+      transportType: "",
+      transportDescription: "",
+      inclusions: [],
+      exclusions: [],
+      isNew: true, // 👈 flag new tiers
+    },
+  ]);
+};
 
         const updateTier = (index: number, key: string, value: any) => {
           const updated = [...field.value];
@@ -251,24 +253,30 @@ export default function PricingBuilder({ form }: any) {
                 </div>
                 </div>
 
-               
-                {/* Inclusions */}
-                <TagListInput
-                  label="Inclusions"
-                  items={p.inclusions ?? []}
-                  onAdd={(val) => addListItem(index, "inclusions", val)}
-                  onRemove={(i) => removeListItem(index, "inclusions", i)}
-                  placeholder="e.g. Park fees, Accommodation, Meals..."
-                />
+                {(showInclusionsExclusions || p.isNew) && (
+  <>
+    <TagListInput
+      label="Inclusions"
+      items={p.inclusions ?? []}
+      onAdd={(val) => addListItem(index, "inclusions", val)}
+      onRemove={(i) => removeListItem(index, "inclusions", i)}
+      placeholder="e.g. Park fees, Accommodation, Meals..."
+    />
+    <TagListInput
+      label="Exclusions"
+      items={p.exclusions ?? []}
+      onAdd={(val) => addListItem(index, "exclusions", val)}
+      onRemove={(i) => removeListItem(index, "exclusions", i)}
+      placeholder="e.g. Flights, Travel insurance..."
+    />
+  </>
+)}
 
-                {/* Exclusions */}
-                <TagListInput
-                  label="Exclusions"
-                  items={p.exclusions ?? []}
-                  onAdd={(val) => addListItem(index, "exclusions", val)}
-                  onRemove={(i) => removeListItem(index, "exclusions", i)}
-                  placeholder="e.g. Flights, Travel insurance..."
-                />
+{p.isNew && (
+  <p className="text-xs text-muted-foreground">
+    New tier — inclusions/exclusions can be edited here. For existing tiers use the section below.
+  </p>
+)}
               
                 
               </Card>
