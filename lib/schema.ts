@@ -46,7 +46,65 @@ export const addNewSchema = z.object({
 
   transportation: z
     .string()
-    .min(2, "Transportation method is required"),
+    .optional(),
+
+  rating: z
+    .number()
+    .min(0)
+    .max(5)
+    .optional(),
+
+  numberOfDays: z
+    .number()
+    .int()
+    .min(1, "Journey must be at least 1 day"),
+
+  activities: z
+    .array(z.string().min(2))
+    .min(1, "At least one activity is required"),
+
+  bestTimeToVisit: z.array(z.string()).optional(),  // 👈 was z.string()
+
+  country: z
+    .string()
+    .min(2, "Country is required"),
+
+  itineraries: z.array(itinerarySchema).optional(),
+
+  tags: z
+    .array(z.string().min(2, "Add atleast one journey tag"))
+    .min(1, "At least one tag is required"), 
+
+    pricing: z.array(pricingSchema).min(1, "Atleast one pricing tier is required")
+});
+
+export const editSchema = z.object({
+  id: z.string().uuid().optional(), // optional if generated server-side
+
+  name: z
+    .string()
+    .min(4, "Please enter the itinerary name or title"),
+
+  slug: z
+    .string()
+    .min(2, "Give the itinerary a slug")
+    .regex(/^[a-z0-9-]+$/, "Slug must be lowercase and hyphenated"),
+
+  imgUrl: z
+    .string()
+    .url("Provide a valid image URL"),
+
+  location: z
+    .string()
+    .min(2, "Location is required"),
+
+  description: z
+    .string()
+    .min(10, "Give a brief description or overview for the journey"),
+
+  transportation: z
+    .string()
+    .optional(),
 
   rating: z
     .number()

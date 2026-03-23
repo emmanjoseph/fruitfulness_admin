@@ -26,13 +26,12 @@ import {
   ImagePlus,
   Car,
   Calendar1Icon,
-  Clock,
 } from "lucide-react";
 
 import { fetchJourneyById, updateJourney} from "@/lib/api";
 import Link from "next/link";
 import { toast } from "sonner";
-import { addNewSchema } from "@/lib/schema";
+import { editSchema } from "@/lib/schema";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import ItinerariesBuilder from "@/components/ItinerariesBuilder";
 import PricingBuilder from "@/components/PricingBuilder";
@@ -40,7 +39,7 @@ import { IconX } from "@tabler/icons-react";
 import { TAG_OPTIONS } from "../../add-new/page";
 import { PricingInclusionsEditor } from "@/components/pricingInclusionsEditor";
 
-export type FormValues = z.infer<typeof addNewSchema>;
+export type FormValues = z.infer<typeof editSchema>;
 
 const countries = [
   { title: "Kenya", value: "kenya" },
@@ -62,7 +61,7 @@ export default function UpdateJourney() {
 
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(addNewSchema),
+    resolver: zodResolver(editSchema),
     defaultValues: {
       name: "",
       slug: "",
@@ -141,7 +140,7 @@ export default function UpdateJourney() {
     );
 
     router.push("/journeys");
-    // alert("Journey update is disabled temporarily")
+
   }
 
   return (
